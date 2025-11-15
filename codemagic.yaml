@@ -1,0 +1,90 @@
+workflows:
+  ios-build:
+    name: iOS Build Release
+    instance_type: mac_mini
+    environment:
+      xcode: latest
+      flutter: stable
+      vars:
+        XCODE_WORKSPACE: "ios/Runner.xcworkspace"
+        XCODE_SCHEME: "Runner"
+        BUNDLE_ID: "com.example.encomendas_outubro_2025"
+
+    scripts:
+      - name: Get dependencies
+        script: |
+          flutter pub get
+
+      - name: Install CocoaPods dependencies
+        script: |
+          cd ios
+          pod install --repo-update
+          cd ..
+
+      - name: Build for iOS
+        script: |
+          flutter build ios --release --no-codesign
+
+      - name: Build IPA
+        script: |
+          cd ios
+          xcodebuild -workspace Runner.xcworkspace \
+            -scheme Runner \
+            -configuration Release \
+            -derivedDataPath build/ios_build \
+            -sdk iphoneos \
+            -arch arm64 \
+            build
+
+      - name: Create IPA
+        script: |
+          cd ios/build/ios_build/Release-iphoneos
+          mkdir -p Payload
+          mv Runner.app Payload/
+          zip -r Runner.ipa Payload/
+          mv Runner.ipa ../../..
+          cd ../../..
+
+    artifacts:
+      - Runner.ipa
+      - build/ios_build/Release-iphoneos/Runner.app/**/*.dsym
+
+    publishing:
+      email:
+        recipients:
+          - rkrdo7maciel@gmail.com
+        notify:
+          success: true
+          failure: true
+
+  android-build:
+    name: Android Build Release
+    instance_type: linux
+    environment:
+      java: default
+      flutter: stable
+
+    scripts:
+      - name: Get dependencies
+        script: |
+          flutter pub get
+
+      - name: Build AAB
+        script: |
+          flutter build appbundle --release
+
+      - name: Build APK
+        script: |
+          flutter build apk --release
+
+    artifacts:
+      - build/app/outputs/bundle/release/app-release.aab
+      - build/app/outputs/flutter-apk/app-release.apk
+
+    publishing:
+      email:
+        recipients:
+          - rkrdo7maciel@gmail.com
+        notify:
+          success: true
+          failure: true
