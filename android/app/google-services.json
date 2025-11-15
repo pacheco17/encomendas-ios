@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "101550614583",
+    "project_id": "encomendas-tecsete",
+    "storage_bucket": "encomendas-tecsete.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:101550614583:android:a397e0ad00bd6a71df37b2",
+        "android_client_info": {
+          "package_name": "com.example.encomendas_outubro_2025"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBeQ2KF9H3Twm_vvNDIP2eSqABX-0LnWWc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

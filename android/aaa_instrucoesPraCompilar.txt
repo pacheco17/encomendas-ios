@@ -1,0 +1,79 @@
+
+No PowerShell entre com:
+PS C:\APPs\Encomendas\encomendas_outubro_2025> cd C:\APPs\Encomendas\encomendas_outubro_2025
+>> flutter clean
+>> flutter pub get
+>> cd android
+>> $env:JAVA_HOME = "C:\Users\User\AppData\Local\Android\Sdk\jdk"
+>> ./gradlew.bat clean
+>> ./gradlew.bat assembleRelease
+
+Após compilar: 
+PS C:\APPs\Encomendas\encomendas_outubro_2025> cd C:\APPs\Encomendas\encomendas_outubro_2025
+>>
+>> # Procura por todos os APKs
+>> Get-ChildItem -Path . -Filter "*.apk" -Recurse -ErrorAction SilentlyContinue | Select-Object FullName
+
+
+=== INFORMAÇÕES IMPORTANTES === 
+
+1. VARIÁVEIS DE AMBIENTE (Windows):
+     - JAVA_HOME: C:\Users\User\AppData\Local\Android\Sdk\jdk
+     - ANDROID_HOME: C:\Users\User\AppData\Local\Android\Sdk
+     - FLUTTER_SDK: C:\Users\User\Flutter\flutter 
+
+2. VERSÕES UTILIZADAS:
+     - Flutter: 3.35.6 - Dart: 3.9.2
+     - Gradle: 8.7 - Kotlin: 1.9.10
+     - Android Gradle Plugin: 8.6.0
+     - Java: OpenJDK 17.0.13 
+
+3. PACKAGE NAME:
+     - com.example.encomendas_outubro_2025
+     
+ 4. ARQUIVOS IMPORTANTES:
+     - android/build.gradle (versões do Gradle e Kotlin)
+     - android/app/build.gradle (configurações do app)
+     - android/gradle.properties (JAVA_HOME)
+     - android/local.properties (SDK e Flutter paths)
+     - pubspec.yaml (dependências) 
+     
+5. DEPENDÊNCIAS PRINCIPAIS:
+     - firebase_core: 4.1.1
+     - firebase_messaging: 16.0.2
+     - flutter_secure_storage: 9.2.4
+     - webview_flutter: (última versão)
+     - http: (última versão) 
+     
+6. CONFIGURAÇÕES IMPORTANTES:
+     - ConfigScreen: Pede phone e unit na primeira execução
+     - WebViewScreen: Carrega URL com dados em Base64
+     - Dados salvos em: Secure Storage (criptografado)
+     - URL: https://encomendas.tecsete.tec.br/pacheco.html?data=BASE64
+     
+7. ESTRUTURA DE PASTAS: lib/ 
+                            ├── main.dart (router principal) 
+                            ├── screens/                           
+                            │           │
+                            │           │
+                            │           └── services/ 
+                            │                       └── notification_service.dart
+                            ├── config_screen.dart (configuração)   
+                            ├── webview_screen.dart (webview)       
+                            └── home_screen.dart                   
+                             
+
+8. LOCALIZAÇÃO DO APK FINAL: 
+    C:\APPs\Encomendas\encomendas_outubro_2025\build\app\outputs\apk\release\app-release.apk 
+    
+9. COMANDOS ÚTEIS: 
+    - flutter doctor (verificar ambiente)
+    - flutter pub outdated (verificar atualizações)
+    - flutter clean (limpar cache)
+    - flutter run (testar em debug) 
+    
+10. POSSÍVEIS PROBLEMAS E SOLUÇÕES:
+     - JAVA_HOME inválido: Definir em gradle.properties
+     - Gradle cache corrompido: Deletar android/.gradle
+     - Erro de compilação: flutter clean + flutter pub get
+     - WebView não carrega: Verificar URL e Base64

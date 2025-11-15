@@ -1,0 +1,247 @@
+
+
+Tentando completar as informações, este é um sistema que busca a simplicidade. 
+Composto por:
+1 - Caixa de Encomendas, dispositivo mecanico controlado por um ESP32
+    que fica instalada na guarita do condominio. 
+2 - Um sistema em ambiente linux numa VPS. A estrutura é composta de 
+    um sistema é de subdominios de frontend e um subdominio de backend onde só os 
+    subdominios do sistema tem acesso.
+3 - Um aplicativo. O aplicativo em si tem poucas funções, quando instalado pede as 
+    informações de condominio e telefone do ususario e criptografam. 
+    Após instalados quando ativados, clicados, chamam a pagina 
+    encomendas.tecsete.tec.br/pacheco.html?data=<dados criptografados>
+    As conferencias são feitas e se tudo ok chama index.php no mesmo endereço.
+    Todas as funcionalidades do APP estão nessa pagina. Com a vantagem de que as 
+    atualizações não precisam de modificação no APP. 
+
+O sistema faz a filtragem do acesso ao sistema que controla a abertura da Caixa
+de Encomendas. Essa Caixa é controlada por um ESP32 que assina um endereço num broker.
+Quem publica é o sistema num backend.
+No APP a unica coisa além dessa estrutura é a flag quando uma encomenda chegar. 
+O morador não precisa confirmar. A flag será ocultada quando o morador ou um dos 
+moradores abrir a guarita para retirar a encomenda. 
+Essa abertura é feita através do sistema do APP que está em index.php. 
+Pra ilustrar, a sequencia de de funcionalidades é o seguinte: o entregador, de alguma 
+forma autorizado, coloca a encomenda na Caixa de Encomendas, o sistema salva em BD
+a informação da entrega. O aplicativo mostra a flag, o morador, em algum momento, 
+retira a encomenda na guarita usando o aplicativo, a data de retira é gravada em BD. 
+A flag é ocultada. 
+A pagina PHP que usaremos pra requisitar ao Flutter fica protegida no subdominio de 
+backend (send-message.php).  
+
+Checklist
+1 - Arquitetura, vou te passar o codigo.
+
+2 - Eventos de entrada. O sistema tem tres formas do entregador fazer a entrega 
+    utilizando a Caixa de Encomendas (parte do sistema com ESP32 e partes mecanicas)
+    1 - ligando pelo interfone para a casa. A casa ou o morador atende e através 
+        do sistema de interfonia (*3 ) a caixa se abre.
+    2 - Através do aplicativo o morador pode acionar a abertura da Caixa de Encomendas.
+    3 - Através da Entrega Automatica. Desde que o morador registre em BD a sua autorização
+        para Entrega Automatica. O entregador lê um QRCode fixado na Caixa de Encomendas que
+        o leva até um HTML que diante de informaçoes do entregador busca se o moradores
+        permite a Entrega Automatica, se sim o sistema fornece uma senha temporaria ao 
+        entregador por SMS. Com a senha correta o sistema fornece ao entregador o botao 
+        que aciona a abertura da Caixa de Encomendas.
+    4 - Quais campos a encomenda tem hoje (id, morador_id, bloco, unidade, status, timestamps)?
+        A tabela messages tem:
+        id: auto encremento
+        Origem: Numero que identifica o condominio
+        telefone: Numero que identifica o morador
+        mensagem: Acão feita pelo dispositivo (abriu a caixa ou abriu a guarita)
+        status:  Se o SMS foi enviado ao morador
+        created_at:  Data e hora da ação
+        sent_at:   ?
+
+3 - Flutter
+    1 - Firebase, não sei responder, vou ter que ir repondendo no passo a passo pra voce.
+    2 - Permissoes, igual ao Firebase.
+    3 - Prefiro que a flag apareça como os aplicativos de mensagens mostram o numero 
+        de mensagens, mas no lugar do numero uma flag. Assim não me comprometo com 
+        quantidades.
+
+4 - Tempo
+    1 - Precisa funcionar mesmo com o app fechado/encerrado? Sim.
+    2 - No iOS, aceita a limitação de que o background fetch não é cronométrico 
+        (o sistema decide quando rodar)? Sim, não tenho alternativa.
+
+6 - Segurança
+    1 - O app usa login por e-mail/senha, SSO, ou outro? Como obtém o token para a API?
+        Somente os dados criptografados.
+    2 - Existe controle de acesso por morador/unidade/bloco?
+        Os dados criptografados
+
+7 - UX e ciclo do flag
+    1 - O “flag” zera quando? Ao abrir a tela? Ao tocar em “Recebi”? 
+        Ao porteiro confirmar a retirada?
+        O sistema preve ações dos entregadores e moradores somente. 
+        A Caixa de Encomendas recebe do entregador de acordo com a autorização.
+        A retirada é feita por um dos moradores acionando o botão abrir guarita no app
+        O registro para conferencia esta nas câmeras de acordo com o relatorio no APP.
+    2 - Quer histórico de encomendas e status (pendente, avisado, retirado, extraviado)?
+        O historico é o registrado no BD.
+
+8 - Escalabilidade e limites
+    1 - Quantos moradores e encomendas por dia, pico por minuto?
+        Iniciartemos com condominios de 8 unidades e media de 5 moradores por unidade.
+        A media de 8 entregas por dia é a previsão.
+    2 - Infra atual (servidor único, limite de CPU/RAM)? Precisa de CDN para imagens/comprovantes?
+        Espaço em Disco: 6.0G de 40G (16% usado)
+        Inodes: 142K de 2.5M (6% usado)
+        RAM: 464Mi de 925Mi (50.2% usado)
+        Swap: 0B de 0B (N/A usado)
+        Carga de CPU (1/5/15 min): 0.03, 0.01, 0.00
+        Uptime: 47 days
+        Previsão de Uso Disco (próx. mês): 6.86 GB no próximo mês
+
+9 - Monitoramento
+    1 - Já possuem logs centralizados? Precisam de dashboard básico de entregabilidade de push?
+        Temos os logs mas não centralizados. Tenho um dashboard mas é precario, um HTML. 
+    2 - Precisam de alertas (ex.: falha em lote de push)? 
+        Acho interessantissimo.
+
+10 - Conformidade
+     1 - Existem requisitos de LGPD/privacidade específicos (retenção de dados, anonimização)?
+         Tenho avisos nos dispositivo (CUIDADO - Fechamento Automatico)
+
+11 - Fallback
+     1 - Se o push falhar (permissão negada), manter o polling? Qual intervalo padrão deseja (10, 15, 30 min)?
+         Usar o de menor custo.
+     2 - Pode diferenciar intervalos para foreground (curto) e background (mais longo)?
+         Qual a sugestão? Não sei sobre isso.
+
+12 - Teste e homologação
+     1 - Temos ambientes separados (dev/homolog/produção)? 
+         Não, somente produção.
+     2 - Como será o plano de testes: casos de uso, latência aceita, carga, falhas simuladas?
+         Tenho um equipamento de teste na bancada com registro real de condominio e moradores.
+
+
+
+describe auditoria_entregas;
++---------------------+---------------+------+-----+---------+----------------+
+| Field               | Type          | Null | Key | Default | Extra          |
++---------------------+---------------+------+-----+---------+----------------+
+| id                  | int(11)       | NO   | PRI | NULL    | auto_increment |
+| entregador          | varchar(100)  | YES  |     | NULL    |                |
+| telefone_entregador | varchar(20)   | YES  |     | NULL    |                |
+| codigo_condominio   | varchar(50)   | YES  |     | NULL    |                |
+| latitude            | decimal(10,8) | YES  |     | NULL    |                |
+| longitude           | decimal(11,8) | YES  |     | NULL    |                |
+| morador_id          | int(11)       | YES  | MUL | NULL    |                |
+| data                | datetime      | YES  |     | NULL    |                |
++---------------------+---------------+------+-----+---------+----------------+
+
+
+ describe deliverer_otps;
++---------------------+--------------+------+-----+---------------------+----------------+
+| Field               | Type         | Null | Key | Default             | Extra          |
++---------------------+--------------+------+-----+---------------------+----------------+
+| id                  | int(11)      | NO   | PRI | NULL                | auto_increment |
+| unidade_coletora_id | int(11)      | NO   | MUL | NULL                |                |
+| morador_id          | int(11)      | NO   | MUL | NULL                |                |
+| recipient_phone     | varchar(50)  | NO   |     | NULL                |                |
+| deliverer_phone     | varchar(50)  | NO   |     | NULL                |                |
+| deliverer_name      | varchar(100) | NO   |     | NULL                |                |
+| otp_code            | varchar(10)  | NO   |     | NULL                |                |
+| created_at          | datetime     | YES  |     | current_timestamp() |                |
+| expires_at          | datetime     | NO   |     | NULL                |                |
+| is_used             | tinyint(1)   | YES  |     | 0                   |                |
+| is_valid            | tinyint(1)   | YES  |     | 1                   |                |
++---------------------+--------------+------+-----+---------------------+----------------+
+
+
+describe delivery_logs;
++---------------------+---------------------------------------------------------------------------------------------------------------+------+-----+---------------------+----------------+
+| Field               | Type                                                                                                          | Null | Key | Default             | Extra          |
++---------------------+---------------------------------------------------------------------------------------------------------------+------+-----+---------------------+----------------+
+| id                  | int(11)                                                                                                       | NO   | PRI | NULL                | auto_increment |
+| otp_id              | int(11)                                                                                                       | YES  | MUL | NULL                |                |
+| unidade_coletora_id | int(11)                                                                                                       | YES  | MUL | NULL                |                |
+| morador_id          | int(11)                                                                                                       | YES  | MUL | NULL                |                |
+| recipient_phone     | varchar(50)                                                                                                   | NO   |     | NULL                |                |
+| deliverer_phone     | varchar(50)                                                                                                   | NO   |     | NULL                |                |
+| deliverer_name      | varchar(100)                                                                                                  | NO   |     | NULL                |                |
+| delivery_attempt_at | datetime                                                                                                      | YES  |     | current_timestamp() |                |
+| status              | enum('success','failed_otp','failed_authorization','failed_box_open','otp_requested','failed_unidade_lookup') | NO   |     | NULL                |                |
+| message             | text                                                                                                          | YES  |     | NULL                |                |
++---------------------+---------------------------------------------------------------------------------------------------------------+------+-----+---------------------+----------------+
+
+describe falhas;
++-----------------+-------------+------+-----+---------------------+----------------+
+| Field           | Type        | Null | Key | Default             | Extra          |
++-----------------+-------------+------+-----+---------------------+----------------+
+| id              | int(11)     | NO   | PRI | NULL                | auto_increment |
+| unidade_id      | varchar(50) | NO   |     | NULL                |                |
+| data_falha      | timestamp   | YES  |     | current_timestamp() |                |
+| data_fim_falha  | datetime    | YES  |     | NULL                |                |
+| duracao_minutos | int(11)     | YES  |     | NULL                |                |
++-----------------+-------------+------+-----+---------------------+----------------+
+
+
+describe messages;
++------------+---------------------------------+------+-----+---------------------+----------------+
+| Field      | Type                            | Null | Key | Default             | Extra          |
++------------+---------------------------------+------+-----+---------------------+----------------+
+| id         | int(11)                         | NO   | PRI | NULL                | auto_increment |
+| Origem     | varchar(20)                     | YES  |     | NULL                |                |
+| telefone   | varchar(20)                     | NO   |     | NULL                |                |
+| mensagem   | text                            | NO   |     | NULL                |                |
+| status     | enum('pending','sent','failed') | YES  |     | pending             |                |
+| created_at | timestamp                       | YES  |     | current_timestamp() |                |
+| sent_at    | timestamp                       | YES  |     | NULL                |                |
++------------+---------------------------------+------+-----+---------------------+----------------+
+
+
+describe moradores;
++---------------+-------------+------+-----+---------+----------------+
+| Field         | Type        | Null | Key | Default | Extra          |
++---------------+-------------+------+-----+---------+----------------+
+| id            | int(11)     | NO   | PRI | NULL    | auto_increment |
+| unidade       | int(11)     | NO   |     | NULL    |                |
+| nome          | varchar(50) | NO   |     | NULL    |                |
+| telefone      | varchar(50) | NO   |     | NULL    |                |
+| cpf           | varchar(11) | YES  |     | NULL    |                |
+| entregarapida | tinyint(1)  | YES  |     | NULL    |                |
++---------------+-------------+------+-----+---------+----------------+
+
+
+describe parceiros;
++-----------+--------------+------+-----+---------------------+----------------+
+| Field     | Type         | Null | Key | Default             | Extra          |
++-----------+--------------+------+-----+---------------------+----------------+
+| id        | int(11)      | NO   | PRI | NULL                | auto_increment |
+| parceiro  | varchar(255) | YES  |     | NULL                |                |
+| unidade   | varchar(255) | NO   |     | NULL                |                |
+| telefone  | varchar(20)  | NO   |     | NULL                |                |
+| timestamp | timestamp    | NO   |     | current_timestamp() |                |
++-----------+--------------+------+-----+---------------------+----------------+
+
+
+describe registros_eventos_wifi;
++-----------------+--------------+------+-----+---------------------+----------------+
+| Field           | Type         | Null | Key | Default             | Extra          |
++-----------------+--------------+------+-----+---------------------+----------------+
+| id              | int(11)      | NO   | PRI | NULL                | auto_increment |
+| numero_de_serie | varchar(255) | NO   |     | NULL                |                |
+| timestamp       | datetime     | YES  |     | current_timestamp() |                |
+| tipo_evento     | varchar(50)  | NO   |     | NULL                |                |
+| detalhes        | text         | YES  |     | NULL                |                |
+| ip_dispositivo  | varchar(45)  | YES  |     | NULL                |                |
++-----------------+--------------+------+-----+---------------------+----------------+
+
+
+describe unidadeColetora;
++---------------+---------------+------+-----+---------------------+----------------+
+| Field         | Type          | Null | Key | Default             | Extra          |
++---------------+---------------+------+-----+---------------------+----------------+
+| id            | int(11)       | NO   | PRI | NULL                | auto_increment |
+| numeroDeSerie | varchar(20)   | NO   |     | NULL                |                |
+| nome          | varchar(50)   | NO   |     | NULL                |                |
+| esp_ip        | varchar(50)   | YES  |     | NULL                |                |
+| numeroip      | varchar(50)   | YES  |     | NULL                |                |
+| latitude      | decimal(10,8) | YES  |     | NULL                |                |
+| longitude     | decimal(11,8) | YES  |     | NULL                |                |
+| ativo         | timestamp     | YES  |     | current_timestamp() |                |
++---------------+---------------+------+-----+---------------------+----------------+
