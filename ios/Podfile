@@ -15,6 +15,4 @@ target 'Runner' do
     flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 end
 
-    flutter_additional_ios_build_settings(target)
-
-end
+flutter_additional_ios_build_settings(target)
