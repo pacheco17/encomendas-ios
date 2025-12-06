@@ -23,6 +23,44 @@
           "other_platform_oauth_client": []
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:101550614583:android:d9292c2db74988e1df37b2",
+        "android_client_info": {
+          "package_name": "com.tecsete.encomendas"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBeQ2KF9H3Twm_vvNDIP2eSqABX-0LnWWc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:101550614583:android:b1f434cb757561e0df37b2",
+        "android_client_info": {
+          "package_name": "com.tecsete.encomendas2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBeQ2KF9H3Twm_vvNDIP2eSqABX-0LnWWc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
     }
   ],
   "configuration_version": "1"

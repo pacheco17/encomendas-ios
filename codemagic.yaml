@@ -8,7 +8,7 @@ workflows:
       vars:
         XCODE_WORKSPACE: "ios/Runner.xcworkspace"
         XCODE_SCHEME: "Runner"
-        BUNDLE_ID: "com.example.encomendas_outubro_2025"
+        BUNDLE_ID: "com.tecsete.encomendas2"
 
     scripts:
       - name: Get dependencies

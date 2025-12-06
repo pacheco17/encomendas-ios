@@ -9,7 +9,13 @@ gradle.projectsEvaluated {
 }
 
 android {
-    namespace = "com.example.encomendas_outubro_2025"
+    def keystoreProperties = new Properties()
+    def keystorePropertiesFile = rootProject.file('key.properties')
+    if (keystorePropertiesFile.exists()) {
+        keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+    }
+
+    namespace = "com.tecsete.encomendas2"
     compileSdk = flutter.compileSdkVersion
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -24,19 +30,39 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.encomendas_outubro_2025"
+        applicationId = "com.tecsete.encomendas2"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
 
+
+    signingConfigs {
+        debug {
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+            storeFile file('debug.keystore')
+            storePassword 'android'
+        }
+        
+        release {
+            storeFile file('encomendas_nova.jks')
+            storePassword '123456'
+            keyAlias 'encomendas'
+            keyPassword '123456'
+        }
+
+    }
+
     buildTypes {
         release {
-            signingConfig = signingConfigs.debug
+            signingConfig signingConfigs.release
         }
     }
+
 }
+
 dependencies {
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.4'
     implementation 'me.leolin:ShortcutBadger:1.1.22@aar'

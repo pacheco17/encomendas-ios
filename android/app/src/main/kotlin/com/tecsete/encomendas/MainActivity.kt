@@ -1,4 +1,4 @@
-package com.example.encomendas_outubro_2025
+package com.tecsete.encomendas2
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -13,7 +13,7 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 
 class MainActivity: FlutterActivity() {
-    private val CHANNEL = "com.example.encomendas_outubro_2025/badge"
+    private val CHANNEL = "com.tecsete.encomendas2/badge"
     private val TAG = "BadgeDebug"
     private val NOTIFICATION_ID = 1
     private val CHANNEL_ID = "badge_channel"

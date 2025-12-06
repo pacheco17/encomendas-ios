@@ -1,6 +1,6 @@
 
 
-Tentando completar as informações, este é um sistema que busca a simplicidade. 
+Um sistema que busca a simplicidade. 
 Composto por:
 1 - Caixa de Encomendas, dispositivo mecanico controlado por um ESP32
     que fica instalada na guarita do condominio. 
@@ -8,7 +8,7 @@ Composto por:
     um sistema é de subdominios de frontend e um subdominio de backend onde só os 
     subdominios do sistema tem acesso.
 3 - Um aplicativo. O aplicativo em si tem poucas funções, quando instalado pede as 
-    informações de condominio e telefone do ususario e criptografam. 
+    informações de condominio e telefone do usuario e criptografa. 
     Após instalados quando ativados, clicados, chamam a pagina 
     encomendas.tecsete.tec.br/pacheco.html?data=<dados criptografados>
     As conferencias são feitas e se tudo ok chama index.php no mesmo endereço.
