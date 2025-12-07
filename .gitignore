@@ -1,1 +1,27 @@
-# Build outputs *.apk *.aab *.zip *.jar bundletool-all.jar app-debug.* app.zip app_extracted/ # Certificates CertificadoApple/*.p12 CertificadoApple/*.key CertificadoApple/*.cer CertificadoApple/*.pem # Flutter build/ .dart_tool/ .flutter-plugins .flutter-plugins-dependencies # IDE .idea/ .vscode/ *.swp *.swo # OS .DS_Store Thumbs.db
+# Build outputs 
+*.apk 
+*.aab 
+*.zip 
+*.jar 
+bundletool-all.jar 
+app-debug.* 
+app.zip 
+app_extracted/ 
+# Certificates 
+CertificadoApple/*.p12 
+CertificadoApple/*.key 
+CertificadoApple/*.cer 
+CertificadoApple/*.pem 
+# Flutter 
+build/ 
+.dart_tool/ 
+.flutter-plugins 
+.flutter-plugins-dependencies 
+# IDE 
+.idea/ 
+.vscode/ 
+*.swp 
+*.swo 
+# OS 
+.DS_Store 
+Thumbs.db
