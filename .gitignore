@@ -7,6 +7,7 @@ bundletool-all.jar
 app-debug.* 
 app.zip 
 app_extracted/ 
+CertificadoApple/
 # Certificates 
 CertificadoApple/*.p12 
 CertificadoApple/*.key 
