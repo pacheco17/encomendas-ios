@@ -22,6 +22,8 @@ build/
 .vscode/ 
 *.swp 
 *.swo 
+ChaveFirebase.txt
+ChavesApple.txt
 # OS 
 .DS_Store 
 Thumbs.db
