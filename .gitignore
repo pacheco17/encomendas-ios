@@ -8,6 +8,7 @@ app-debug.*
 app.zip 
 app_extracted/ 
 CertificadoApple/
+ios/Configs/
 # Certificates 
 CertificadoApple/*.p12 
 CertificadoApple/*.key 
